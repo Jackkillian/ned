@@ -1,7 +1,4 @@
-# Spotify
-
-[![PyPI - Version](https://img.shields.io/pypi/v/spotify.svg)](https://pypi.org/project/spotify)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spotify.svg)](https://pypi.org/project/spotify)
+# Ned
 
 -----
 
@@ -12,9 +9,7 @@
 
 ## Installation
 
-```console
-pip install spotify
-```
+TODO
 
 ## License
 
