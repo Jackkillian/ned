@@ -12,6 +12,8 @@ def get_config():
 
 def get_spotify_creds():
     config = get_config()
+    if config is None:
+        return None
     return config.get("id"), config.get("secret")
 
 

@@ -33,13 +33,11 @@ class MainController(Controller):
     def librespot_info_text(self) -> Text: ...
 
     def on_load(self):
-        self.client = SpotifyTerminalClient(*get_spotify_creds())
+        creds = get_spotify_creds()
+        if creds:
+            self.client = SpotifyTerminalClient(*creds)
+            result, msg = self.client.start_librespot()  # TODO: check result
         self.session = SpotifySessionInfo()
-
-        print(f"MainController session id: {id(self.session)}")
-
-        result, msg = self.client.start_librespot()
-        # TODO: check result
 
         # keybinds = {
         #     "q": "quit",
@@ -55,6 +53,14 @@ class MainController(Controller):
         # self.keybind_text.set_text(text)
         # self.footer_text.set_text("Press [n] to wake up Ned")
         self.update_track_info(self.manager.loop, None)
+
+    def on_enter(self):
+        if hasattr(self, "client"):
+            return
+        creds = get_spotify_creds()
+        if creds:
+            self.client = SpotifyTerminalClient(*creds)
+            result, msg = self.client.start_librespot()  # TODO: check result
 
     def update_track_info(self, mainloop, data):
         mainloop.set_alarm_in(0.01, self.update_track_info)

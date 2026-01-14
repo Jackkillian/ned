@@ -36,7 +36,7 @@ class SetupController(Controller):
     def quit_callback(self, *args):
         raise urwid.ExitMainLoop()
 
-    def setup_callback(self, node, ctx, w):
+    def setup_callback(self, *args):
         self.error_text.set_text("")
         id = self.id_edit.get_edit_text().strip()
         secret = self.secret_edit.get_edit_text().strip()

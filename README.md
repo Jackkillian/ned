@@ -9,7 +9,11 @@
 
 ## Installation
 
-TODO
+NOTE: This project is under heavy development.
+To test for yourself, clone and run
+```console
+hatch run ned
+```
 
 ## License
 
