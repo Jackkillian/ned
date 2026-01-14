@@ -1,0 +1,42 @@
+<pile xmlns:mu="https://github.com/Jackkillian/modern-urwid" mu:id="root">
+    <mu:resources>
+        <mu:python module="ned.controllers" />
+        <mu:python module="ned.constants" />
+        <mu:widget module="ned.widgets" />
+        <mu:stylesheet path="styles.css" />
+    </mu:resources>
+    <mu:layout controller="@controllers.MainController" />
+    <filler mu:height="1" mu:class="header">
+        <text align="center" markup="Ned v{constants.VERSION}" />
+    </filler>
+    <filler mu:height="1" mu:class="secondary">
+        <columns>
+            <text mu:id="session_info_text" />
+            <text mu:id="librespot_info_text" />
+        </columns>
+    </filler>
+    <filler>
+        <divider />
+    </filler>
+    <filler mu:height="1">
+        <text align="center" mu:id="track_info_text" />
+    </filler>
+    <centered mu:height="1">
+        <progressbar
+            normal="pb_empty"
+            complete="pb_full"
+            satt="pb_satt"
+            current="10"
+            mu:id="progressbar"
+        />
+    </centered>
+    <filler>
+        <divider />
+    </filler>
+    <filler mu:height="1" mu:class="secondary">
+        <divider />
+    </filler>
+    <filler mu:height="2" mu:class="secondary">
+        <text wrap="space" mu:id="keybind_text" />
+    </filler>
+</pile>

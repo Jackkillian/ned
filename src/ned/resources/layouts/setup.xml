@@ -1,0 +1,37 @@
+<pile xmlns:mu="https://github.com/Jackkillian/modern-urwid" mu:id="root">
+    <mu:resources>
+        <mu:python module="ned.controllers" />
+        <mu:python module="ned.constants" />
+        <mu:widget module="ned.widgets" />
+        <mu:stylesheet path="styles.css" />
+    </mu:resources>
+    <mu:layout controller="@controllers.SetupController" />
+    <filler>
+        <divider />
+    </filler>
+    <filler valign="middle" mu:height="5">
+        <pile mu:id="widgets_pile">
+            <text align="center" mu:class="header">Welcome to Ned</text>
+            <edit caption="ID: " align="center" mu:id="id_edit" />
+            <edit caption="Secret: " align="center" mu:id="secret_edit" />
+            <text markup="" align="center" mu:id="error_text" />
+            <divider />
+        </pile>
+    </filler>
+    <centeredbutton
+        on_press="@controllers.SetupController.setup_callback"
+        mu:height="1"
+    >Setup</centeredbutton>
+    <centeredbutton
+        on_press="@controllers.SetupController.help_callback"
+        mu:height="1"
+        mu:child_class="url"
+    >Need help?</centeredbutton>
+    <centeredbutton
+        on_press="@controllers.SetupController.quit_callback"
+        mu:height="1"
+    >Quit</centeredbutton>
+    <filler>
+        <divider />
+    </filler>
+</pile>

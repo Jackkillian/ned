@@ -1,0 +1,5 @@
+.secrets
+.cache
+credentials.json
+__pycache__/
+spotify_cache/

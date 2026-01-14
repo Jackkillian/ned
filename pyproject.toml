@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ned"
+dynamic = ["version"]
+description = "A terminal interface for Spotify"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+keywords = ["spotify", "tui"]
+authors = [
+  { name = "Jackkillian", email = "jackkillian@tuta.com" },
+]
+dependencies = [
+  "requests",
+  "spotipy",
+  "modern-urwid",
+  "urwid",
+  "cfgsaver",
+]
+
+[project.urls]
+Documentation = "https://github.com/Jackkillian/ned#readme"
+Issues = "https://github.com/Jackkillian/ned/issues"
+Source = "https://github.com/Jackkillian/ned"
+
+[project.scripts]
+ned = "ned.app:run"
+
+[tool.hatch.version]
+path = "src/ned/__about__.py"
+
+[tool.hatch.build]
+include = [
+  "src/ned/resources/**/*",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ned"]

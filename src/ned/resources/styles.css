@@ -1,0 +1,44 @@
+#root {
+    color-adv: #efefef;
+    background-adv: #131313;
+}
+
+.header {
+    color-adv: #ff9905, bold;
+    background-adv: #222222;
+}
+
+.url {
+    color-adv: #7373ff, underline;
+    background-adv: #131313;
+}
+
+#error_text {
+    color-adv: #ff6464, bold;
+    background-adv: #131313;
+}
+
+#track_info_text {
+    color-adv: #df7905;
+    background-adv: #131313;
+}
+
+.secondary {
+    color-adv: #df7905;
+    background-adv: #222222;
+}
+
+.footer {
+    color-adv: #df7905, italics;
+    background-adv: #222222;
+}
+
+#song_text {
+    color-adv: #df7905, bold;
+    background-adv: #131313;
+}
+
+#artist_text {
+    color-adv: #df7905;
+    background-adv: #131313;
+}
