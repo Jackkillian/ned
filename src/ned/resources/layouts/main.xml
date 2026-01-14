@@ -8,7 +8,7 @@
     <mu:layout controller="@controllers.MainController" />
     <filler mu:height="1" mu:class="header">
         <columns>
-            <text align="center" markup="Ned v{constants.VERSION}" />
+            <text align="center" markup="Ned {constants.VERSION}" />
             <text align="center" mu:id="session_info_text" />
             <text align="center" mu:id="librespot_info_text" />
         </columns>

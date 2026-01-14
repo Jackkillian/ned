@@ -2,6 +2,8 @@
 
 -----
 
+![demo](demo.png)
+
 ## Table of Contents
 
 - [Installation](#installation)
