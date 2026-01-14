@@ -1,4 +1,4 @@
-# Ned
+# ned
 
 -----
 
@@ -13,4 +13,4 @@ TODO
 
 ## License
 
-`spotify` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
+`ned` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
