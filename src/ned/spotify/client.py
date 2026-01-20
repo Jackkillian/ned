@@ -1,16 +1,17 @@
 import atexit
+import shutil
 import subprocess
 
 import spotipy
-from requests.sessions import session
 
 from ned.api import spotify_call
 from ned.config import get_device_name
 from ned.session import SessionState
-from ned.spotify.session_data import DotDict, SpotifySessionInfo
 from ned.timer import BackgroundTimer
+from ned.utils import is_librespot_installed
 
 from .scope import Library, Playback, SpotifyConnect, get_scope
+from .session_data import DotDict, SpotifySessionInfo
 
 SCOPE = get_scope(
     SpotifyConnect.ReadPlaybackState,
@@ -65,7 +66,7 @@ class SpotifyTerminalClient(metaclass=ClientSingleton):
 
     def start_librespot(self):
         cmd = [
-            "librespot",
+            shutil.which("librespot"),
             "--name",
             self.device_name,
             # "--backend",
@@ -81,6 +82,13 @@ class SpotifyTerminalClient(metaclass=ClientSingleton):
         ]
 
         self.stop()
+
+        if not is_librespot_installed():
+            print(
+                "Librespot is not installed. Please see the setup instructions at https://github.com/Jackkillian/ned for more details."
+            )
+            exit(1)
+
         self.librespot_process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,

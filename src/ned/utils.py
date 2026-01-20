@@ -1,3 +1,6 @@
+import shutil
+
+
 def format_milli(milli: int) -> str:
     total_seconds = milli // 1000
 
@@ -9,3 +12,7 @@ def format_milli(milli: int) -> str:
         return f"{hr}:{min:02}:{sec:02}"
     else:
         return f"{min}:{sec:02}"
+
+
+def is_librespot_installed():
+    return shutil.which("librespot") is not None

@@ -9,9 +9,15 @@
     <filler>
         <divider />
     </filler>
-    <filler valign="middle" mu:height="5">
+    <filler valign="middle" mu:height="6">
         <pile mu:id="widgets_pile">
             <text align="center" mu:class="header">Welcome to Ned</text>
+            <text
+                align="center"
+                mu:class="header"
+                mu:id="librespot"
+            >Checking if librespot is installed...</text>
+            <divider />
             <edit caption="ID: " align="center" mu:id="id_edit" />
             <edit caption="Secret: " align="center" mu:id="secret_edit" />
             <text markup="" align="center" mu:id="error_text" />
