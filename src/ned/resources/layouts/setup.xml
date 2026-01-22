@@ -19,7 +19,6 @@
             >Checking if librespot is installed...</text>
             <divider />
             <edit caption="ID: " align="center" mu:id="id_edit" />
-            <edit caption="Secret: " align="center" mu:id="secret_edit" />
             <text markup="" align="center" mu:id="error_text" />
             <divider />
         </pile>

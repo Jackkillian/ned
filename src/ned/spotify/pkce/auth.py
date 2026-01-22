@@ -1,5 +1,6 @@
 import urllib.parse
-import webbrowser
+
+from ned.utils import open_url
 
 from .server import OAuthCallbackServer
 from .util import generate_code_challenge, generate_code_verifier
@@ -7,7 +8,7 @@ from .util import generate_code_challenge, generate_code_verifier
 SPOTIFY_AUTHORIZE_URL = "https://accounts.spotify.com/authorize"
 
 
-class SpotifyAuth:
+class PKCEAuth:
     def __init__(
         self,
         client_id: str,
@@ -45,7 +46,7 @@ class SpotifyAuth:
         self.server.start()
 
         auth_url = self.build_auth_url()
-        webbrowser.open(auth_url)
+        open_url(auth_url)
 
         code = self.server.wait_for_code()
         return code, self.code_verifier

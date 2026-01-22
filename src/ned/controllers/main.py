@@ -3,6 +3,7 @@ from modern_urwid import Controller, assign_widget
 from urwid import Text
 
 from ned.config import get_spotify_creds
+from ned.constants import ASCII_PAUSE, ASCII_PLAY
 from ned.spotify.client import SpotifyTerminalClient
 from ned.spotify.session_data import DotDict, SpotifySessionInfo
 from ned.utils import format_milli
@@ -26,6 +27,9 @@ class MainController(Controller):
     @assign_widget("artist_text")
     def artist_text(self) -> Text: ...
 
+    @assign_widget("status_text")
+    def status_text(self) -> Text: ...
+
     @assign_widget("session_info_text")
     def session_info_text(self) -> Text: ...
 
@@ -33,9 +37,9 @@ class MainController(Controller):
     def librespot_info_text(self) -> Text: ...
 
     def on_load(self):
-        creds = get_spotify_creds()
-        if creds:
-            self.client = SpotifyTerminalClient(*creds)
+        client_id = get_spotify_creds()
+        if client_id:
+            self.client = SpotifyTerminalClient(client_id)
             result, msg = self.client.start_librespot()  # TODO: check result
         self.session = SpotifySessionInfo()
 
@@ -57,23 +61,17 @@ class MainController(Controller):
     def on_enter(self):
         if hasattr(self, "client"):
             return
-        creds = get_spotify_creds()
-        if creds:
-            self.client = SpotifyTerminalClient(*creds)
+        client_id = get_spotify_creds()
+        if client_id:
+            self.client = SpotifyTerminalClient(client_id)
             result, msg = self.client.start_librespot()  # TODO: check result
 
     def update_track_info(self, mainloop, data):
-        mainloop.set_alarm_in(0.01, self.update_track_info)
+        mainloop.set_alarm_in(0.1, self.update_track_info)
 
-        if self.session.librespot == "connecting":
-            self.librespot_info_text.set_text("Connecting to Spotify...")
-        elif self.session.librespot == "connected":
-            self.librespot_info_text.set_text("Connected")
-        elif self.session.librespot == "waiting":
-            self.librespot_info_text.set_text("Waiting for Librespot...")
+        self.librespot_info_text.set_text(self.session.librespot.value)
 
         if display_name := self.session.user.display_name:
-            # text = f"Logged in as: {display_name}"
             text = display_name
         else:
             text = "Logging in..."
@@ -81,12 +79,14 @@ class MainController(Controller):
 
         if not (playback := self.session.playback):
             self.progressbar.current = 0
+            self.status_text.set_text(ASCII_PLAY)
             self.song_text.set_text("<Nothing playing>")
             self.artist_text.set_text("")
             return
 
         if not (item := playback.item):
             self.progressbar.current = 0
+            self.status_text.set_text(ASCII_PLAY)
             self.song_text.set_text("<Nothing playing>")
             self.artist_text.set_text("")
             return
@@ -99,9 +99,13 @@ class MainController(Controller):
         self.progressbar.done = item.duration_ms
         self.progressbar.set_max_time(format_milli(item.duration_ms))
 
+        self.status_text.set_text(
+            ASCII_PAUSE if self.client.timer.running else ASCII_PLAY
+        )
+
         text = item.name
-        # if item.explicit:
-        #     text += " (E)"
+        if item.explicit:
+            text += " (E)"
         self.song_text.set_text(text)
         self.artist_text.set_text(artists)
 
@@ -125,8 +129,10 @@ class MainController(Controller):
             self.client.next_track()
         elif data == " " and (playback := self.session.playback):
             if playback.is_playing:
+                self.status_text.set_text(ASCII_PLAY)
                 self.client.timer.stop()
                 self.client.pause()
             else:
+                self.status_text.set_text(ASCII_PAUSE)
                 self.client.timer.start()
                 self.client.resume()

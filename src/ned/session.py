@@ -2,13 +2,26 @@ import threading
 import time
 from typing import TYPE_CHECKING
 
-from ned.spotify.session_data import DotDict, SpotifySessionInfo
+from ned.spotify.api_instance import SpotifyAPI
+from ned.spotify.scope import Library, Playback, SpotifyConnect, get_scope
+from ned.spotify.session_data import DotDict, LSStatus, SpotifySessionInfo
 
 if TYPE_CHECKING:
     from ned.spotify.client import SpotifyTerminalClient
 
 UPDATE_INTERVAL_MS = 2000
 DEVICE_UPDATE_INTERVAL_MS = 5000
+SCOPE = get_scope(
+    SpotifyConnect.ReadPlaybackState,
+    SpotifyConnect.ModifyPlaybackState,
+    SpotifyConnect.ReadCurrentlyPlaying,
+    Playback.AppRemoteControl,
+    Playback.Streaming,
+    # Users.Personalized,
+    # Users.ReadPrivate,
+    # Users.ReadEmail,
+    Library.Read,
+)
 
 
 class SessionState:
@@ -19,6 +32,18 @@ class SessionState:
         self.running = False
         self.thread = None
         self.lock = threading.Lock()
+        self.device_id = None
+
+    def get_device_id(self):
+        if self.device_id is not None:
+            return self.device_id
+        result = self.client.api.get_devices()
+        if not result["ok"]:
+            return None
+        for device in result["data"]["devices"]:
+            if device["name"] == self.client.device_name:
+                return device["id"]
+        return None
 
     def _timer_loop(self):
         while self.running:
@@ -26,22 +51,25 @@ class SessionState:
             with self.lock:
                 self.timer += 10
                 if self.timer >= UPDATE_INTERVAL_MS:
-                    user: dict = self.client.sp.current_user()
-                    if user:
+                    user_result = self.client.api.get_me()
+                    if user_result["ok"]:
                         # TODO: maybe only call this once
-                        self.session.user = DotDict(user)
+                        self.session.user = DotDict(user_result["data"])
 
-                    device_id = self.client.get_device_id()
-                    if not device_id:
-                        self.session.librespot = "waiting"
-                    elif self.session.playback.device.id == device_id:
-                        self.session.librespot = "connected"
+                    self.device_id = self.get_device_id()
+                    if not self.device_id:
+                        self.session.librespot = LSStatus.WAITING
+                    elif self.session.playback.device.id == self.device_id:
+                        self.session.librespot = LSStatus.CONNECTED
                     else:
-                        self.session.librespot = "connecting"
-                        self.client.sp.transfer_playback(device_id, False)
+                        self.session.librespot = LSStatus.CONNECTING
+                        result = self.client.api.transfer_playback(self.device_id)
+                        if not result["ok"]:
+                            self.session.librespot = LSStatus.FAILED
 
-                    if playback := self.client.get_current_playback():
-                        self.session.playback = DotDict(playback)
+                    result = self.client.api.get_current_playback()
+                    if result["ok"] and result["data"]:
+                        self.session.playback = DotDict(result["data"])
                         self.client.timer.set_time(self.session.playback.progress_ms)
 
                         if (

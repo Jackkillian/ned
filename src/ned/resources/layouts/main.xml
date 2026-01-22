@@ -25,6 +25,9 @@
     <centered mu:height="1">
         <timebar mu:id="progressbar" />
     </centered>
+    <filler mu:height="1">
+        <text align="center" mu:id="status_text" />
+    </filler>
     <filler>
         <divider />
     </filler>

@@ -1,17 +1,15 @@
 import atexit
 import shutil
 import subprocess
+import threading
 
-import spotipy
-
-from ned.api import spotify_call
-from ned.config import get_device_name
+from ned.config import get_cached_token, get_device_name, save_cached_token
 from ned.session import SessionState
+from ned.spotify.api_instance import SpotifyAPI
 from ned.timer import BackgroundTimer
-from ned.utils import is_librespot_installed
+from ned.utils import CACHE_DIR, is_librespot_installed
 
 from .scope import Library, Playback, SpotifyConnect, get_scope
-from .session_data import DotDict, SpotifySessionInfo
 
 SCOPE = get_scope(
     SpotifyConnect.ReadPlaybackState,
@@ -46,21 +44,23 @@ class ClientSingleton(type):
 
 
 class SpotifyTerminalClient(metaclass=ClientSingleton):
-    def __init__(self, client_id=None, client_secret=None):
+    def __init__(self, client_id=None):
         if client_id:
             self.client_id = client_id
-        if client_secret:
-            self.client_secret = client_secret
-        if not hasattr(self, "sp"):
-            sp_oauth = spotipy.SpotifyOAuth(
-                client_id=client_id,
-                client_secret=client_secret,
-                redirect_uri=REDIRECT_URI,
+
+        if not hasattr(self, "api"):
+            self.api = SpotifyAPI(
+                client_id=self.client_id,
                 scope=SCOPE,
-                cache_path=".cache",  # TODO: use diff dir
             )
-            access_token = sp_oauth.get_access_token(as_dict=False)
-            self.sp = spotipy.Spotify(auth=access_token)
+            token = get_cached_token()
+            if token and self.api.is_token_valid(token):
+                self.access_token = token
+                self.api.oauth_token = self.access_token
+            else:
+                self.api.perform_oauth()
+                self.access_token = self.api.oauth_token
+            save_cached_token(self.access_token)
 
         atexit.register(self.stop)
 
@@ -71,8 +71,10 @@ class SpotifyTerminalClient(metaclass=ClientSingleton):
             self.device_name,
             # "--backend",
             # "portaudio",  # or "alsa", "pulseaudio" depending on your system
+            "--access-token",
+            self.access_token,
             "--cache",
-            "./spotify_cache",
+            CACHE_DIR,
             "--enable-oauth",
             "--device-type",
             "computer",
@@ -96,6 +98,8 @@ class SpotifyTerminalClient(metaclass=ClientSingleton):
             text=True,
             bufsize=1,
         )
+
+        # TODO: have log view screen
 
         # def log_output(pipe, prefix):
         #     for line in pipe:
@@ -137,28 +141,28 @@ class SpotifyTerminalClient(metaclass=ClientSingleton):
             return
 
         print(f"Playing {track_uri} on device {device_id}")
-        self.sp.start_playback(device_id=device_id, uris=[track_uri])
+        self.api.start_playback(device_id=device_id, uris=[track_uri])
 
     def pause(self):
-        spotify_call(self.sp.pause_playback)
+        self.api.pause_playback()
 
     def resume(self):
-        spotify_call(self.sp.start_playback)
+        self.api.start_playback()
 
     def next_track(self):
-        spotify_call(self.sp.next_track)
+        self.api.skip_to_next()
 
     def previous_track(self):
-        spotify_call(self.sp.previous_track)
+        self.api.skip_to_previous()
 
     def seek(self, position_ms):
-        spotify_call(self.sp.seek_track, position_ms)
+        self.api.seek_to_position(position_ms)
 
     def get_current_playback(self):
-        return spotify_call(self.sp.current_playback)
+        return self.api.get_current_playback()
 
     def set_volume(self, volume_percent):
-        spotify_call(self.sp.volume, volume_percent)
+        self.api.set_volume(volume_percent)
 
     def stop(self):
         if self.librespot_process:

@@ -1,38 +1,20 @@
-import shutil
 import signal
 import sys
 import time
-from importlib.resources import as_file, files
-from pathlib import Path
 
 import urwid
 from modern_urwid import CompileContext, LifecycleManager
 from urwid.event_loop.main_loop import ExitMainLoop
 
 from ned.config import get_config
+from ned.utils import RESOURCES_DIR, setup_resources
 
 from .spotify.client import SpotifyTerminalClient
 
 
-def setup_resources(override=False) -> Path:
-    dest_root = Path.home() / ".ned" / "resources"
-    resources_package = files("ned.resources")
-    with as_file(resources_package) as src_path:
-        if not dest_root.exists():
-            shutil.copytree(src_path, dest_root)
-        elif override:
-            for src_file in src_path.rglob("*"):
-                if src_file.is_file():
-                    relative_path = src_file.relative_to(src_path)
-                    dest_file = dest_root / relative_path
-                    dest_file.parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copy2(src_file, dest_file)
-    return dest_root
-
-
 def run():
-    resources_dir = setup_resources(True)  # TODO: for dev
-    context = CompileContext(resources_dir)
+    setup_resources(True)  # TODO: for dev
+    context = CompileContext(RESOURCES_DIR)
     loop = urwid.MainLoop(
         urwid.Text(""),
         palette=[

@@ -1,9 +1,7 @@
 import time
 
-from spotipy.exceptions import SpotifyException
 
-
-def handle_spotify_error(e: SpotifyException):
+def handle_spotify_error(e):
     status = e.http_status
     message = e.msg or str(e)
 
@@ -29,16 +27,3 @@ def handle_spotify_error(e: SpotifyException):
 
     else:
         raise RuntimeError(f"Spotify error {status}: {message}") from e
-
-
-def spotify_call(func, *args, **kwargs):
-    while True:
-        try:
-            return func(*args, **kwargs)
-
-        except SpotifyException as e:
-            action = handle_spotify_error(e)
-            if action == "pass":
-                break
-            elif action != "retry":
-                raise

@@ -7,7 +7,7 @@ from urwid import Edit, Pile, Text
 
 from ned.config import save_config
 from ned.spotify.client import SpotifyTerminalClient
-from ned.utils import is_librespot_installed
+from ned.utils import is_librespot_installed, open_url
 
 
 class SetupController(Controller):
@@ -21,9 +21,6 @@ class SetupController(Controller):
 
     @assign_widget("id_edit")
     def id_edit(self) -> Edit: ...
-
-    @assign_widget("secret_edit")
-    def secret_edit(self) -> Edit: ...
 
     @assign_widget("error_text")
     def error_text(self) -> Text: ...
@@ -42,13 +39,7 @@ class SetupController(Controller):
             self.librespot_text.set_text("Error: librespot not installed")
 
     def help_callback(self, *args):
-        savout = os.dup(1)
-        os.close(1)
-        os.open(os.devnull, os.O_RDWR)
-        try:
-            webbrowser.open("https://github.com/Jackkillian/ned")
-        finally:
-            os.dup2(savout, 1)
+        open_url("https://github.com/Jackkillian/ned")
 
     def quit_callback(self, *args):
         raise urwid.ExitMainLoop()
@@ -62,16 +53,15 @@ class SetupController(Controller):
             return
 
         id = self.id_edit.get_edit_text().strip()
-        secret = self.secret_edit.get_edit_text().strip()
-        if (not id or id.isspace()) or (not secret or secret.isspace()):
-            self.error_text.set_text("ID and secret fields must not be empty")
+        if not id or id.isspace():
+            self.error_text.set_text("ID field must not be empty")
             return
 
         self.error_text.set_text(("info_neutral", "Loading..."))
-        save_config({"id": id, "secret": secret})
+        save_config({"id": id})
 
         self.error_text.set_text(("info_neutral", "Starting Librespot..."))
-        self.client = SpotifyTerminalClient(id, secret)
+        self.client = SpotifyTerminalClient(id)
         result, msg = self.client.start_librespot()
         if result:
             self.error_text.set_text(("info_success", msg))

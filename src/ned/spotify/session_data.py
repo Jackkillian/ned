@@ -1,3 +1,4 @@
+from enum import Enum
 from threading import Lock
 from typing import Literal, NotRequired, TypedDict
 
@@ -139,6 +140,13 @@ class DotDict(dict):
     #         self[k] = self._wrap(v)
 
 
+class LSStatus(Enum):
+    CONNECTING = "Connecting to Spotify..."
+    CONNECTED = "Connected"
+    WAITING = "Waiting for Librespot..."
+    FAILED = "Failed to connect to Spotify."
+
+
 class SpotifySessionInfo:
     _instance = None
     _lock = Lock()
@@ -154,6 +162,4 @@ class SpotifySessionInfo:
     def _initialize(self):
         self.user: UserDict = DotDict()
         self.playback: PlaybackDict = DotDict()
-        self.librespot: (
-            Literal["connecting"] | Literal["connected"] | Literal["waiting"]
-        ) = "connecting"
+        self.librespot: LSStatus = LSStatus.CONNECTING

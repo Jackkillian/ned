@@ -1,13 +1,13 @@
 import requests
 
-from .auth import SpotifyAuth
+from .auth import PKCEAuth
 
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 REDIRECT_URI = "http://127.0.0.1:8080/callback"
 
 
 def get_oauth(client_id, scope: str):
-    auth = SpotifyAuth(
+    auth = PKCEAuth(
         client_id=client_id,
         redirect_uri=REDIRECT_URI,
         scope=scope,
