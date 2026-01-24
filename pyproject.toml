@@ -15,7 +15,7 @@ authors = [
 ]
 dependencies = [
   "requests",
-  "modern-urwid",
+  "modern-urwid>=1.1.3",
   "urwid",
   "cfgsaver",
 ]
