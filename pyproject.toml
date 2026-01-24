@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ned"
+name = "ned-client"
 dynamic = ["version"]
 description = "A terminal interface for Spotify"
 readme = "README.md"
