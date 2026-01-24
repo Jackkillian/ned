@@ -5,7 +5,7 @@ from urwid import Text
 from ned.config import get_spotify_creds
 from ned.constants import ASCII_PAUSE, ASCII_PLAY
 from ned.spotify.client import SpotifyTerminalClient
-from ned.spotify.session_data import DotDict, SpotifySessionInfo
+from ned.spotify.session_data import SpotifySessionInfo
 from ned.utils import format_milli
 from ned.widgets import TimeProgressBar
 
@@ -37,12 +37,6 @@ class MainController(Controller):
     def librespot_info_text(self) -> Text: ...
 
     def on_load(self):
-        client_id = get_spotify_creds()
-        if client_id:
-            self.client = SpotifyTerminalClient(client_id)
-            result, msg = self.client.start_librespot()  # TODO: check result
-        self.session = SpotifySessionInfo()
-
         # keybinds = {
         #     "q": "quit",
         #     "esc": "back",
@@ -56,15 +50,12 @@ class MainController(Controller):
         #     text.extend([("keybind_key", f"[{key}] "), ("keybind_bind", f"{bind}   ")])
         # self.keybind_text.set_text(text)
         # self.footer_text.set_text("Press [n] to wake up Ned")
-        self.update_track_info(self.manager.loop, None)
+        pass
 
     def on_enter(self):
-        if hasattr(self, "client"):
-            return
-        client_id = get_spotify_creds()
-        if client_id:
-            self.client = SpotifyTerminalClient(client_id)
-            result, msg = self.client.start_librespot()  # TODO: check result
+        self.client = SpotifyTerminalClient()
+        self.session = SpotifySessionInfo()
+        self.update_track_info(self.manager.loop, None)
 
     def update_track_info(self, mainloop, data):
         mainloop.set_alarm_in(0.1, self.update_track_info)

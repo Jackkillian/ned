@@ -2,7 +2,6 @@ import urwid
 from modern_urwid import CompileContext, LifecycleManager
 from urwid.event_loop.main_loop import ExitMainLoop
 
-from ned.config import get_config
 from ned.utils import RESOURCES_DIR, setup_resources
 
 
@@ -25,16 +24,11 @@ def run():
     loop.screen.set_terminal_properties(2**24)
 
     manager = LifecycleManager(context, loop)
+    manager.register("layouts/preload.xml")
     manager.register("layouts/main.xml")
     manager.register("layouts/setup.xml")
 
-    # determine if this is the first run
-    config = get_config()
-    layout = "main"
-    if config is None:
-        layout = "setup"
-
     try:
-        manager.run(layout)
+        manager.run("preload")
     except (ExitMainLoop, KeyboardInterrupt):
         pass

@@ -48,20 +48,19 @@ class SpotifyTerminalClient(metaclass=ClientSingleton):
         if client_id:
             self.client_id = client_id
 
-        if not hasattr(self, "api"):
-            self.api = SpotifyAPI(
-                client_id=self.client_id,
-                scope=SCOPE,
-            )
-            token = get_cached_token()
-            if token and self.api.is_token_valid(token):
-                self.access_token = token
-                self.api.oauth_token = self.access_token
-            else:
-                # TODO: make this better in the UI
-                self.api.perform_oauth()
-                self.access_token = self.api.oauth_token
-            save_cached_token(self.access_token)
+    def setup(self):
+        self.api = SpotifyAPI(
+            client_id=self.client_id,
+            scope=SCOPE,
+        )
+        token = get_cached_token()
+        if token and self.api.is_token_valid(token):
+            self.access_token = token
+            self.api.oauth_token = self.access_token
+        else:
+            self.api.perform_oauth()
+            self.access_token = self.api.oauth_token
+        save_cached_token(self.access_token)
 
         atexit.register(self.stop)
 

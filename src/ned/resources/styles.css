@@ -38,12 +38,9 @@
     background-adv: #131313;
 }
 
-#artist_text {
-    color-adv: #df7905;
-    background-adv: #131313;
-}
-
-#status_text {
+#artist_text,
+#status_text,
+.styled-text {
     color-adv: #df7905;
     background-adv: #131313;
 }

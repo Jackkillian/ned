@@ -1,0 +1,25 @@
+<pile xmlns:mu="https://github.com/Jackkillian/modern-urwid" mu:id="root">
+    <mu:resources>
+        <mu:python module="ned.controllers" />
+        <mu:python module="ned.constants" />
+        <mu:stylesheet path="styles.css" />
+    </mu:resources>
+    <mu:layout controller="@controllers.PreloadController" />
+    <filler mu:height="1" mu:class="header">
+        <columns>
+            <text align="center" markup="Ned {constants.VERSION}" />
+        </columns>
+    </filler>
+    <filler>
+        <divider />
+    </filler>
+    <filler mu:class="styled-text">
+        <text align="center" mu:id="info" />
+    </filler>
+    <filler>
+        <divider />
+    </filler>
+    <filler mu:height="1">
+        <text align="center" markup="Loading..." mu:class="secondary" />
+    </filler>
+</pile>
