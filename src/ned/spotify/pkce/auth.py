@@ -1,11 +1,18 @@
+import base64
+import hashlib
+import secrets
 import urllib.parse
 
 from ned.utils import open_url
 
 from .server import OAuthCallbackServer
-from .util import generate_code_challenge, generate_code_verifier
 
 SPOTIFY_AUTHORIZE_URL = "https://accounts.spotify.com/authorize"
+
+
+def generate_code_challenge(verifier: str) -> str:
+    digest = hashlib.sha256(verifier.encode()).digest()
+    return base64.urlsafe_b64encode(digest).rstrip(b"=").decode()
 
 
 class PKCEAuth:
@@ -28,7 +35,7 @@ class PKCEAuth:
             path=callback_path,
         )
 
-        self.code_verifier = generate_code_verifier()
+        self.code_verifier = secrets.token_urlsafe(64)
         self.code_challenge = generate_code_challenge(self.code_verifier)
 
     def build_auth_url(self) -> str:

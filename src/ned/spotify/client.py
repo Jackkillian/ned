@@ -58,6 +58,7 @@ class SpotifyTerminalClient(metaclass=ClientSingleton):
                 self.access_token = token
                 self.api.oauth_token = self.access_token
             else:
+                # TODO: make this better in the UI
                 self.api.perform_oauth()
                 self.access_token = self.api.oauth_token
             save_cached_token(self.access_token)

@@ -78,7 +78,6 @@ class SpotifyAPI:
             )
 
     def perform_oauth(self):
-        # TODO: make this better in ui
         code, verifier = get_oauth(self.client_id, self.scope)
         self.oauth_token = get_token_from_oauth(self.client_id, code, verifier)
 
