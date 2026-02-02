@@ -2,18 +2,15 @@ import urwid
 from modern_urwid import Controller, assign_widget
 from urwid import Text
 
-from ned.config import get_spotify_creds
 from ned.constants import ASCII_PAUSE, ASCII_PLAY
 from ned.spotify.client import SpotifyTerminalClient
 from ned.spotify.session_data import SpotifySessionInfo
 from ned.utils import format_milli
 from ned.widgets import TimeProgressBar
 
-DEVICE_UPDATE_INTERVAL = 5
 
-
-class MainController(Controller):
-    name = "main"
+class SimpleController(Controller):
+    name = "simple"
 
     @assign_widget("progressbar")
     def progressbar(self) -> TimeProgressBar: ...

@@ -2,7 +2,6 @@ import threading
 import time
 from typing import TYPE_CHECKING
 
-from ned.spotify.api_instance import SpotifyAPI
 from ned.spotify.scope import Library, Playback, SpotifyConnect, get_scope
 from ned.spotify.session_data import DotDict, LSStatus, SpotifySessionInfo
 
@@ -10,7 +9,7 @@ if TYPE_CHECKING:
     from ned.spotify.client import SpotifyTerminalClient
 
 UPDATE_INTERVAL_MS = 2000
-DEVICE_UPDATE_INTERVAL_MS = 5000
+DEVICE_UPDATE_INTERVAL_MS = 5000  # TODO: this isn't used
 SCOPE = get_scope(
     SpotifyConnect.ReadPlaybackState,
     SpotifyConnect.ModifyPlaybackState,

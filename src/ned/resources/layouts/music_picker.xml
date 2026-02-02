@@ -5,7 +5,7 @@
         <mu:widget module="ned.widgets" />
         <mu:stylesheet path="styles.css" />
     </mu:resources>
-    <mu:layout controller="@controllers.MainController" />
+    <mu:layout controller="@controllers.SimpleController" />
     <filler mu:height="1" mu:class="header">
         <text align="center" markup="Ned v{constants.VERSION}" />
     </filler>

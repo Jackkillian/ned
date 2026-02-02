@@ -50,4 +50,4 @@ class PreloadController(Controller):
         else:
             self.manager.switch("setup")
             return
-        self.manager.switch("main")
+        self.manager.switch("simple")

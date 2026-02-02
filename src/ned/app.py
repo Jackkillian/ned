@@ -25,7 +25,7 @@ def run():
 
     manager = LifecycleManager(context, loop)
     manager.register("layouts/preload.xml")
-    manager.register("layouts/main.xml")
+    manager.register("layouts/simple.xml")
     manager.register("layouts/setup.xml")
 
     try:
