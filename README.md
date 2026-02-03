@@ -1,4 +1,5 @@
 # ned
+[![Build Python Package](https://github.com/Jackkillian/ned/actions/workflows/python-publish.yml/badge.svg)](https://github.com/Jackkillian/ned/actions/workflows/python-publish.yml)
 
 -----
 
