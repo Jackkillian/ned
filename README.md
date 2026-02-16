@@ -1,5 +1,5 @@
 # ned
-[![Build Python Package](https://github.com/Jackkillian/ned/actions/workflows/python-publish.yml/badge.svg)](https://github.com/Jackkillian/ned/actions/workflows/python-publish.yml)
+[![Build Python Package](https://github.com/Jackkillian/ned/actions/workflows/python-publish.yml/badge.svg)](https://github.com/Jackkillian/ned/actions/workflows/python-publish.yml) [![PyPI](https://img.shields.io/pypi/v/ned-client?label=pypi%20package)](https://pypi.org/project/ned-client/)
 
 -----
 
