@@ -1,5 +1,5 @@
 import urwid
-from modern_urwid import CompileContext, LifecycleManager
+from modern_urwid import CompileContext
 from urwid.event_loop.main_loop import ExitMainLoop
 
 from ned.custom_mu import APILifecycleManager
@@ -8,7 +8,7 @@ from ned.utils import RESOURCES_DIR, setup_resources
 
 
 def run():
-    setup_resources(True)  # TODO: for dev
+    setup_resources(True)  # TODO: True for dev mode
     context = CompileContext(RESOURCES_DIR)
     loop = urwid.MainLoop(
         urwid.Text(""),
@@ -16,9 +16,10 @@ def run():
             ("pb_empty", "", "", "", "#efefef", "#000000"),
             ("pb_full", "", "", "", "#000000", "#ffb955"),
             ("pb_satt", "", "", "", "#ffb955", "#000000"),
-            ("info_success", "", "", "", "#64ff64,bold", "#131313"),
-            ("info_neutral", "", "", "", "#6464ff,bold", "#131313"),
-            ("info_error", "", "", "", "#ff6464,bold", "#131313"),
+            ("text_success", "", "", "", "#64ff64,bold", "#131313"),
+            ("text_warn", "", "", "", "#ffff64", "#131313"),
+            ("text_info", "", "", "", "#ffffff", "#131313"),
+            ("text_error", "", "", "", "#ff6464", "#131313"),
             ("keybind_key", "", "", "", "#ff9905,bold", "#222222"),
             ("keybind_bind", "", "", "", "#df7905", "#222222"),
         ],

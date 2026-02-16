@@ -32,7 +32,12 @@ class LogsController(APIController):
         if len(self.session.data.logs) != len(self.listbox.body):
             self.listbox.body.clear()
             for log in self.session.data.logs:
-                self.listbox.body.append(urwid.Text(log))
+                style = "text_info"
+                if "ERROR" in log:
+                    style = "text_error"
+                elif "WARN" in log:
+                    style = "text_warn"
+                self.listbox.body.append(urwid.Text((style, log)))
             self.listbox.set_focus(len(self.listbox.body) - 1)
 
     def on_unhandled_input(self, data):

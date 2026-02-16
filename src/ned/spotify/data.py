@@ -204,13 +204,14 @@ class PlaybackData(DataClass):
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "PlaybackData":
         item_dict = data.get("item", {})
-        item_type = item_dict.get("type")
-        if item_type == "track":
-            item = TrackData.from_dict(item_dict)
-        elif item_type == "episode":
-            item = EpisodeData.from_dict(item_dict)
-        else:
-            item = None
+
+        item = None
+        if item_dict:
+            item_type = item_dict.get("type")
+            if item_type == "track":
+                item = TrackData.from_dict(item_dict)
+            elif item_type == "episode":
+                item = EpisodeData.from_dict(item_dict)
 
         return cls(
             device=DeviceData.from_dict(data.get("device", {})),

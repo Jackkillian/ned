@@ -41,7 +41,7 @@ class SetupController(APIController):
             return
         self.id_edit.set_edit_text("")
 
-        self.error_text.set_text(("info_neutral", "Loading..."))
+        self.error_text.set_text(("text_info", "Loading..."))
         save_config({"id": id})
 
         self.manager.switch("preload")

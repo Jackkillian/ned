@@ -104,15 +104,15 @@ class NedSession:
             bufsize=1,
         )
 
-        def log_output(pipe, prefix):
+        def log_output(pipe):
             for line in pipe:
-                self.data.logs.append(f"[{prefix}] {line.rstrip()}")
+                self.data.logs.append(line.rstrip())
 
         threading.Thread(
-            target=log_output, args=(self.librespot_process.stdout, "OUT"), daemon=True
+            target=log_output, args=(self.librespot_process.stdout,), daemon=True
         ).start()
         threading.Thread(
-            target=log_output, args=(self.librespot_process.stderr, "ERR"), daemon=True
+            target=log_output, args=(self.librespot_process.stderr,), daemon=True
         ).start()
 
         # Check if process is still running
