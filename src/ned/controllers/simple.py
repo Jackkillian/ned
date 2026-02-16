@@ -1,5 +1,5 @@
 import urwid
-from modern_urwid import Controller, assign_widget
+from modern_urwid import assign_widget
 from urwid import Text
 
 from ned.constants import ASCII_PAUSE, ASCII_PLAY
@@ -27,13 +27,11 @@ class SimpleController(APIController):
     @assign_widget("status_text")
     def status_text(self) -> Text: ...
 
-    @assign_widget("session_info_text")
-    def session_info_text(self) -> Text: ...
-
     @assign_widget("librespot_info_text")
     def librespot_info_text(self) -> Text: ...
 
     def on_load(self):
+        self.update_handle = None
         # keybinds = {
         #     "q": "quit",
         #     "esc": "back",
@@ -47,13 +45,17 @@ class SimpleController(APIController):
         #     text.extend([("keybind_key", f"[{key}] "), ("keybind_bind", f"{bind}   ")])
         # self.keybind_text.set_text(text)
         # self.footer_text.set_text("Press [n] to wake up Ned")
-        pass
 
     def on_enter(self):
         self.update_track_info(self.manager.loop, None)
 
+    def on_exit(self):
+        if self.update_handle:
+            self.manager.loop.remove_alarm(self.update_handle)
+            self.update_handle = None
+
     def update_track_info(self, mainloop, data):
-        mainloop.set_alarm_in(0.1, self.update_track_info)
+        self.update_handle = mainloop.set_alarm_in(0.1, self.update_track_info)
 
         self.librespot_info_text.set_text(self.session.data.librespot.value)
 
@@ -61,7 +63,6 @@ class SimpleController(APIController):
             text = display_name
         else:
             text = "Logging in..."
-        self.session_info_text.set_text(text)
 
         if not (playback := self.session.data.playback):
             self.progressbar.current = 0
@@ -101,6 +102,8 @@ class SimpleController(APIController):
     def on_unhandled_input(self, data):
         if data == "q":
             raise urwid.ExitMainLoop()
+        elif data == "l":
+            self.manager.switch("logs")
         elif data == "left" and (playback := self.session.data.playback):
             self.session.timer.decrement_time(5000)
             new_ms = self.session.timer.get_time()

@@ -29,6 +29,7 @@ def run():
     manager.register("layouts/preload.xml", "preload")
     manager.register("layouts/simple.xml", "simple")
     manager.register("layouts/setup.xml", "setup")
+    manager.register("layouts/logs.xml", "logs")
 
     try:
         manager.run("preload")

@@ -5,36 +5,24 @@
         <mu:widget module="ned.widgets" />
         <mu:stylesheet path="styles.css" />
     </mu:resources>
-    <mu:layout controller="@controllers.SimpleController" />
+    <mu:layout controller="@controllers.LogsController" />
     <filler mu:height="1" mu:class="header">
         <columns>
             <text align="center" markup="Ned {constants.VERSION}" />
-            <text align="center" markup="Sleeping" />
+            <text align="center" markup="Logs" />
             <text align="center" mu:id="librespot_info_text" />
         </columns>
     </filler>
-    <filler>
-        <divider />
-    </filler>
+    <scrollbar mu:id="scrollbar">
+        <listbox mu:id="listbox"/>
+    </scrollbar>
     <filler mu:height="1">
-        <text align="center" mu:id="song_text" />
-    </filler>
-    <filler mu:height="1">
-        <text align="center" mu:id="artist_text" />
-    </filler>
-    <centered mu:height="1">
-        <timebar mu:id="progressbar" />
-    </centered>
-    <filler mu:height="1">
-        <text align="center" mu:id="status_text" />
-    </filler>
-    <filler>
         <divider />
     </filler>
     <filler mu:height="1" mu:class="footer">
         <text
             align="center"
-            markup="Press [n] to wake up Ned"
+            markup="Press [esc] to exit logs"
             mu:id="footer_text"
         />
     </filler>

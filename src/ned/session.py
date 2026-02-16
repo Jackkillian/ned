@@ -1,11 +1,8 @@
 import atexit
-from enum import Enum
 import shutil
 import subprocess
 import threading
 import time
-from typing import TYPE_CHECKING, Literal, Type, TypeVar, Any
-from dataclasses import dataclass
 
 from ned.config import get_cached_token, get_device_name, save_cached_token
 from ned.spotify.api_instance import SpotifyAPI
@@ -33,7 +30,7 @@ DEVICE_UPDATE_INTERVAL = 5  # TODO: this isn't used
 class SessionData:
     device_id: str | None = None
     device_name: str = ""
-
+    logs: list[str] = []
     user = UserData.from_dict({})
     playback = PlaybackData.from_dict({})
     librespot: LSStatus = LSStatus.CONNECTING
@@ -107,18 +104,16 @@ class NedSession:
             bufsize=1,
         )
 
-        # TODO: have log view screen
+        def log_output(pipe, prefix):
+            for line in pipe:
+                self.data.logs.append(f"[{prefix}] {line.rstrip()}")
 
-        # def log_output(pipe, prefix):
-        #     for line in pipe:
-        #         print(f"[LS {prefix}] {line.rstrip()}")
-
-        # threading.Thread(
-        #     target=log_output, args=(self.librespot_process.stdout, "OUT"), daemon=True
-        # ).start()
-        # threading.Thread(
-        #     target=log_output, args=(self.librespot_process.stderr, "ERR"), daemon=True
-        # ).start()
+        threading.Thread(
+            target=log_output, args=(self.librespot_process.stdout, "OUT"), daemon=True
+        ).start()
+        threading.Thread(
+            target=log_output, args=(self.librespot_process.stderr, "ERR"), daemon=True
+        ).start()
 
         # Check if process is still running
         if self.librespot_process.poll() is not None:
