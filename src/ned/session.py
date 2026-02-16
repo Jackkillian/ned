@@ -294,76 +294,6 @@ class SessionData:
     librespot: LSStatus = LSStatus.CONNECTING
 
 
-# TODO: combine this class with the NedSession one
-class SessionUpdater:
-    def __init__(
-        self, api: SpotifyAPI, session_data: SessionData, timer: BackgroundTimer
-    ):
-        self.timer = timer
-        self.api = api
-        self.running = False
-        self.thread = None
-        self.lock = threading.Lock()
-        self.device_id = None
-
-        self.data = session_data
-
-    def get_device_id(self):
-        if self.device_id is not None:
-            return self.device_id
-        result = self.api.get_devices()
-        if not result["ok"]:
-            return None
-        for device in result["data"]["devices"]:
-            if device["name"] == self.data.device_name:
-                return device["id"]
-        return None
-
-    def _timer_loop(self):
-        while self.running:
-            time.sleep(UPDATE_INTERVAL)
-            with self.lock:
-                user_result = self.api.get_me()
-                if user_result["ok"]:
-                    # TODO: maybe only call this once
-                    self.data.user = UserData.from_dict(user_result["data"])
-
-                result = self.api.get_current_playback()
-                if result["ok"] and result["data"]:
-                    self.data.playback = PlaybackData.from_dict(result["data"])
-                    self.timer.set_time(self.data.playback.progress_ms)
-
-                    # TODO: should logic be in this class?
-                    if self.data.playback.is_playing and not self.timer.running:
-                        self.timer.start()
-                    elif not self.data.playback.is_playing and self.timer.running:
-                        self.timer.stop()
-                else:
-                    self.data.playback = PlaybackData.from_dict({})
-
-                self.device_id = self.get_device_id()
-                if not self.device_id:
-                    self.data.librespot = LSStatus.WAITING
-                elif self.data.playback.device.id == self.device_id:
-                    self.data.librespot = LSStatus.CONNECTED
-                else:
-                    self.data.librespot = LSStatus.CONNECTING
-                    result = self.api.transfer_playback(self.device_id)
-                    if not result["ok"]:
-                        self.data.librespot = LSStatus.FAILED
-
-    def start(self):
-        if not self.running:
-            self.running = True
-            self.thread = threading.Thread(target=self._timer_loop, daemon=True)
-            self.thread.start()
-
-    def stop(self):
-        self.running = False
-        if self.thread:
-            self.thread.join()
-
-
 class NedSession:
     def __init__(self):
         self.librespot_process = None
@@ -373,6 +303,10 @@ class NedSession:
 
         self.timer = BackgroundTimer()
         self.timer.start()
+
+        self.thread_running = False
+        self.thread = None
+        self.lock = threading.Lock()
 
     def setup(self, client_id):
         self.client_id = client_id
@@ -389,8 +323,7 @@ class NedSession:
             self.access_token = self.api.oauth_token
         save_cached_token(self.access_token)
 
-        self.session_state = SessionUpdater(self.api, self.data, self.timer)
-        self.session_state.start()
+        self.start_thread()
 
         atexit.register(self.stop)
 
@@ -452,15 +385,12 @@ class NedSession:
         return True, "Successfully started Librespot"
 
     def get_device_id(self):
-        # TODO: is this a dup
         if self.data.device_id is not None:
             return self.data.device_id
         result = self.api.get_devices()
-        if result["ok"]:
-            devices = result["data"]
-        else:
+        if not result["ok"]:
             return None
-        for device in devices:
+        for device in result["data"]["devices"]:
             if device["name"] == self.data.device_name:
                 return device["id"]
         return None
@@ -473,3 +403,47 @@ class NedSession:
             except subprocess.TimeoutExpired:
                 self.librespot_process.kill()
                 self.librespot_process.wait()
+
+    def _update_state_loop(self):
+        while self.thread_running:
+            time.sleep(UPDATE_INTERVAL)
+            with self.lock:
+                user_result = self.api.get_me()
+                if user_result["ok"]:
+                    # TODO: maybe only call this once
+                    self.data.user = UserData.from_dict(user_result["data"])
+
+                result = self.api.get_current_playback()
+                if result["ok"] and result["data"]:
+                    self.data.playback = PlaybackData.from_dict(result["data"])
+                    self.timer.set_time(self.data.playback.progress_ms)
+
+                    # TODO: should logic be in this class?
+                    if self.data.playback.is_playing and not self.timer.running:
+                        self.timer.start()
+                    elif not self.data.playback.is_playing and self.timer.running:
+                        self.timer.stop()
+                else:
+                    self.data.playback = PlaybackData.from_dict({})
+
+                self.data.device_id = self.get_device_id()
+                if not self.data.device_id:
+                    self.data.librespot = LSStatus.WAITING
+                elif self.data.playback.device.id == self.data.device_id:
+                    self.data.librespot = LSStatus.CONNECTED
+                else:
+                    self.data.librespot = LSStatus.CONNECTING
+                    result = self.api.transfer_playback(self.data.device_id)
+                    if not result["ok"]:
+                        self.data.librespot = LSStatus.FAILED
+
+    def start_thread(self):
+        if not self.thread_running:
+            self.thread_running = True
+            self.thread = threading.Thread(target=self._update_state_loop, daemon=True)
+            self.thread.start()
+
+    def stop_thread(self):
+        self.thread_running = False
+        if self.thread:
+            self.thread.join()
