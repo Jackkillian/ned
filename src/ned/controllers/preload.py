@@ -1,12 +1,12 @@
-from modern_urwid import Controller, assign_widget
+from modern_urwid import assign_widget
 from urwid import Pile, Text
 
 from ned.config import get_config, get_spotify_creds, save_config
-from ned.spotify.client import SpotifyTerminalClient
+from ned.custom_mu import APIController
 from ned.utils import is_librespot_installed, open_url
 
 
-class PreloadController(Controller):
+class PreloadController(APIController):
     name = "preload"
 
     @assign_widget("root")
@@ -40,9 +40,8 @@ class PreloadController(Controller):
         # setup all of the threads here
         client_id = get_spotify_creds()
         if client_id:
-            self.client = SpotifyTerminalClient(client_id)
-            self.client.setup()
-            result, msg = self.client.start_librespot()  # TODO: check result
+            self.session.setup(client_id)
+            result, msg = self.session.start_librespot()  # TODO: check result
             if result:
                 self.update_text("Started Librespot.")
             else:

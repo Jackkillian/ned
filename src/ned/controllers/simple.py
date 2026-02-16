@@ -3,13 +3,13 @@ from modern_urwid import Controller, assign_widget
 from urwid import Text
 
 from ned.constants import ASCII_PAUSE, ASCII_PLAY
-from ned.spotify.client import SpotifyTerminalClient
-from ned.spotify.session_data import SpotifySessionInfo
+from ned.custom_mu import APIController
+from ned.session import TrackData
 from ned.utils import format_milli
 from ned.widgets import TimeProgressBar
 
 
-class SimpleController(Controller):
+class SimpleController(APIController):
     name = "simple"
 
     @assign_widget("progressbar")
@@ -50,22 +50,20 @@ class SimpleController(Controller):
         pass
 
     def on_enter(self):
-        self.client = SpotifyTerminalClient()
-        self.session = SpotifySessionInfo()
         self.update_track_info(self.manager.loop, None)
 
     def update_track_info(self, mainloop, data):
         mainloop.set_alarm_in(0.1, self.update_track_info)
 
-        self.librespot_info_text.set_text(self.session.librespot.value)
+        self.librespot_info_text.set_text(self.session.data.librespot.value)
 
-        if display_name := self.session.user.display_name:
+        if display_name := self.session.data.user.display_name:
             text = display_name
         else:
             text = "Logging in..."
         self.session_info_text.set_text(text)
 
-        if not (playback := self.session.playback):
+        if not (playback := self.session.data.playback):
             self.progressbar.current = 0
             self.status_text.set_text(ASCII_PLAY)
             self.song_text.set_text("<Nothing playing>")
@@ -79,16 +77,19 @@ class SimpleController(Controller):
             self.artist_text.set_text("")
             return
 
-        artists = ", ".join(map(lambda artist: artist.get("name"), item.artists))
+        artists = "<TODO>"
+        if isinstance(item, TrackData):
+            artists = ", ".join(map(lambda artist: artist.get("name"), item.artists))
 
-        progress_ms = self.client.timer.get_time()
+        progress_ms = self.session.timer.get_time()
         self.progressbar.current = progress_ms
         self.progressbar.set_current_time(format_milli(progress_ms))
+
         self.progressbar.done = item.duration_ms
         self.progressbar.set_max_time(format_milli(item.duration_ms))
 
         self.status_text.set_text(
-            ASCII_PAUSE if self.client.timer.running else ASCII_PLAY
+            ASCII_PAUSE if self.session.timer.running else ASCII_PLAY
         )
 
         text = item.name
@@ -100,27 +101,28 @@ class SimpleController(Controller):
     def on_unhandled_input(self, data):
         if data == "q":
             raise urwid.ExitMainLoop()
-        elif data == "left" and (playback := self.session.playback):
-            self.client.timer.decrement_time(5000)
-            new_ms = self.client.timer.get_time()
+        elif data == "left" and (playback := self.session.data.playback):
+            self.session.timer.decrement_time(5000)
+            new_ms = self.session.timer.get_time()
             self.progressbar.current = new_ms
-            self.client.seek(new_ms)
-        elif data == "right" and (playback := self.session.playback):
-            self.client.timer.increment_time(5000)
-            new_ms = self.client.timer.get_time()
+            self.session.api.seek_to_position(new_ms)
+        elif data == "right" and (playback := self.session.data.playback):
+            self.session.timer.increment_time(5000)
+            new_ms = self.session.timer.get_time()
             self.progressbar.current = new_ms
             # TODO: schedule a seek with the timer ?
-            self.client.seek(new_ms)
+            self.session.api.seek_to_position(new_ms)
         elif data == "up":
-            self.client.previous_track()
+            self.session.api.skip_to_previous()
         elif data == "down":
-            self.client.next_track()
-        elif data == " " and (playback := self.session.playback):
+            self.session.api.skip_to_next()
+        elif data == " " and (playback := self.session.data.playback):
             if playback.is_playing:
                 self.status_text.set_text(ASCII_PLAY)
-                self.client.timer.stop()
-                self.client.pause()
+                self.session.timer.stop()
+                self.session.api.pause_playback()
             else:
                 self.status_text.set_text(ASCII_PAUSE)
-                self.client.timer.start()
-                self.client.resume()
+                self.session.timer.start()
+                # TODO: start timer after confirming playback starts?
+                self.session.api.start_playback()

@@ -3,11 +3,11 @@ from modern_urwid import Controller, assign_widget
 from urwid import Edit, Pile, Text
 
 from ned.config import save_config
-from ned.spotify.client import SpotifyTerminalClient
+from ned.custom_mu import APIController
 from ned.utils import is_librespot_installed, open_url
 
 
-class SetupController(Controller):
+class SetupController(APIController):
     name = "setup"
 
     @assign_widget("root")

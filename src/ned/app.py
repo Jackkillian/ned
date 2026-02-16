@@ -2,6 +2,8 @@ import urwid
 from modern_urwid import CompileContext, LifecycleManager
 from urwid.event_loop.main_loop import ExitMainLoop
 
+from ned.custom_mu import APILifecycleManager
+from ned.session import NedSession
 from ned.utils import RESOURCES_DIR, setup_resources
 
 
@@ -23,10 +25,10 @@ def run():
     )
     loop.screen.set_terminal_properties(2**24)
 
-    manager = LifecycleManager(context, loop)
-    manager.register("layouts/preload.xml")
-    manager.register("layouts/simple.xml")
-    manager.register("layouts/setup.xml")
+    manager = APILifecycleManager(context, NedSession(), loop)
+    manager.register("layouts/preload.xml", "preload")
+    manager.register("layouts/simple.xml", "simple")
+    manager.register("layouts/setup.xml", "setup")
 
     try:
         manager.run("preload")
