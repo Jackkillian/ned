@@ -129,6 +129,7 @@ class NedSession:
             return self.data.device_id
         result = self.api.get_devices()
         if not result["ok"]:
+            self.data.logs.append(f"[ERR] Could not load devices: {result['data']}")
             return None
         for device in result["data"]["devices"]:
             if device["name"] == self.data.device_name:
@@ -152,6 +153,10 @@ class NedSession:
                 if user_result["ok"]:
                     # TODO: maybe only call this once
                     self.data.user = UserData.from_dict(user_result["data"])
+                else:
+                    self.data.logs.append(
+                        f"[ERR] Could not load user data: {user_result['data']}"
+                    )
 
                 result = self.api.get_current_playback()
                 if result["ok"] and result["data"]:
@@ -166,6 +171,11 @@ class NedSession:
                 else:
                     self.data.playback = PlaybackData.from_dict({})
 
+                if not result["ok"]:
+                    self.data.logs.append(
+                        f"[ERR] Could not load playback: {result['data']}"
+                    )
+
                 self.data.device_id = self.get_device_id()
                 if not self.data.device_id:
                     self.data.librespot = LSStatus.WAITING
@@ -175,6 +185,9 @@ class NedSession:
                     self.data.librespot = LSStatus.CONNECTING
                     result = self.api.transfer_playback(self.data.device_id)
                     if not result["ok"]:
+                        self.data.logs.append(
+                            f"[ERR] Could not transfer playback: {result['data']}"
+                        )
                         self.data.librespot = LSStatus.FAILED
 
     def start_thread(self):
