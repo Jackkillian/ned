@@ -4,7 +4,7 @@ from urwid import Text
 
 from ned.constants import ASCII_PAUSE, ASCII_PLAY
 from ned.custom_mu import APIController
-from ned.session import TrackData
+from ned.spotify.data import TrackData
 from ned.utils import format_milli
 from ned.widgets import TimeProgressBar
 
