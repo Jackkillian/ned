@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 src-tauri/target
+docs/api/
+docs/.vitepress/cache/

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src"],
+  "entryPointStrategy": "expand",
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/node_modules/**",
+    "./src/vite-env.d.ts"
+  ],
+  "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+  "out": "./docs/api",
+  "docsRoot": "./docs",
+  "entryFileName": "index.md",
+  "hideBreadcrumbs": true,
+  "hidePageTitle": false,
+  "membersWithOwnFile": [],
+  "navigation": {
+    "includeCategories": false,
+    "includeGroups": false
+  }
+}
