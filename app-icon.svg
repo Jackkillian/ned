@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1024"
+   height="1024"
+   viewBox="0 0 1024 1024"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   sodipodi:docname="app-icon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="0.49126816"
+     inkscape:cx="513.97591"
+     inkscape:cy="612.7"
+     inkscape:window-width="1470"
+     inkscape:window-height="895"
+     inkscape:window-x="1"
+     inkscape:window-y="33"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter1"
+       x="-0.00060095809"
+       y="-0.00048802934"
+       width="1.0012019"
+       height="1.0009761">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.1110227"
+         id="feGaussianBlur1" />
+    </filter>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:1;fill:#f5ca00;fill-opacity:1;stroke:none;stroke-width:1;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1"
+       width="824"
+       height="824"
+       x="100"
+       y="100"
+       ry="335.86545" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer 2">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:824px;line-height:1;font-family:'Lao MN';-inkscape-font-specification:'Lao MN';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;opacity:1;mix-blend-mode:normal;fill:#000000;fill-opacity:1;stroke-width:1;stroke-dasharray:none;filter:url(#filter1)"
+       x="217.88673"
+       y="772.51758"
+       id="text1"
+       inkscape:label="text1"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         x="217.88673"
+         y="772.51758"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:1;font-family:'Lao MN';-inkscape-font-specification:'Lao MN'"
+         dy="0">N</tspan></text>
+  </g>
+</svg>

@@ -1,0 +1,52 @@
+{
+  "name": "react-tauri",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "type-check": "tsc --noEmit",
+    "lint": "bun run type-check && eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "@gfazioli/mantine-audio": "^1.1.0",
+    "@mantine/core": "^9.5.0",
+    "@mantine/hooks": "^9.5.0",
+    "@phosphor-icons/react": "^2.1.10",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2.7.2",
+    "@tauri-apps/plugin-opener": "^2",
+    "clsx": "^2.1.1",
+    "mantine-datatable": "^9.4.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router": "^8.3.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "@types/node": "^26.1.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@typescript-eslint/parser": "^8.65.0",
+    "@vitejs/plugin-react": "^6.0.2",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "globals": "^17.8.0",
+    "neostandard": "^0.13.0",
+    "postcss": "^8.5.23",
+    "postcss-preset-mantine": "^1.18.0",
+    "postcss-simple-vars": "^7.0.1",
+    "typescript": "<6.1.0",
+    "vite": "^8.0.16",
+    "vite-plugin-checker": "^0.14.5"
+  }
+}
