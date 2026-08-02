@@ -9,8 +9,10 @@ import { ImageBrokenIcon } from "@phosphor-icons/react";
  */
 export function AlbumArt({
   albumArt,
+  size,
 }: {
   albumArt: string | undefined | null;
+  size: string | number;
 }) {
   return (
     <AspectRatio ratio={1}>
@@ -20,12 +22,12 @@ export function AlbumArt({
           src={albumArt}
           alt="Album Cover"
           draggable="false"
-          w="128px"
+          w={size}
         />
       ) : (
         <Box bg="dark.6" c="dimmed">
-          <Center h="100%">
-            <ImageBrokenIcon size={128} />
+          <Center h="100%" p="xl">
+            <ImageBrokenIcon size={size} />
           </Center>
         </Box>
       )}

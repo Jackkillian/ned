@@ -15,7 +15,7 @@ export function SongsGrid() {
         return (
           <Card key={album} shadow="sm" padding="lg" withBorder>
             <Card.Section>
-              <AlbumArt albumArt={albumArt} />
+              <AlbumArt albumArt={albumArt} size="fit" />
             </Card.Section>
             <Anchor component={Link} fw={500} mt="md" to={`/album/${album}`}>
               {album}

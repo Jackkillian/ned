@@ -19,7 +19,7 @@ export function Component() {
   return (
     <Stack mt="md">
       <Group>
-        <AlbumArt albumArt={albumArt} />
+        <AlbumArt albumArt={albumArt} size={128} />
         <Stack gap="sm">
           <Group align="baseline">
             <Title>{album}</Title>
