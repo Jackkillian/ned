@@ -99,10 +99,19 @@ function Player() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <MantineProvider>
-      <Player />
-    </MantineProvider>
-  </React.StrictMode>,
-);
+// HMR bugfix
+declare global {
+  var __reactRoot: ReactDOM.Root | undefined;
+}
+const rootElement = document.getElementById("root");
+if (rootElement) {
+  const root = globalThis.__reactRoot ?? ReactDOM.createRoot(rootElement);
+  globalThis.__reactRoot = root;
+  root.render(
+    <React.StrictMode>
+      <MantineProvider>
+        <Player />
+      </MantineProvider>
+    </React.StrictMode>,
+  );
+}
