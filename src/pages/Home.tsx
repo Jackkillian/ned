@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import {
   Button,
@@ -7,7 +7,6 @@ import {
   Title,
   Stack,
   Box,
-  LoadingOverlay,
   Paper,
 } from "@mantine/core";
 import { SongsTable } from "../components/SongsTable";
@@ -33,38 +32,38 @@ async function loadSongs(path: string): Promise<Song[]> {
 }
 
 export function Component() {
+  const [isPending, startTransition] = useTransition();
   const [mode, setMode] = useState<ViewMode>(ViewMode.CARD);
-  const [loading, setLoading] = useState(false);
   const [path, setPath] = useState("");
   const { setSongs } = useLibrary();
 
   useEffect(() => {
-    loadSongs("/Users/school/Music/twenty one pilots/").then((songs) =>
-      setSongs(songs),
-    );
+    startTransition(async () => {
+      const songs = await loadSongs("/Users/school/Music/twenty one pilots/");
+      startTransition(() => setSongs(songs));
+    });
   }, [setSongs]);
 
   return (
     <Stack pos="relative" h="100%">
-      <LoadingOverlay
-        visible={loading}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
       <Paper p="md" pos="sticky" top={0}>
         <Stack gap="sm">
           <Group>
             <Title order={2} mr="auto">
               Search Directory
             </Title>
-            <ViewToggleButton onChange={setMode} value={mode} />
+            <ViewToggleButton
+              onChange={(mode) => startTransition(() => setMode(mode))}
+              value={mode}
+            />
           </Group>
           <form
             onSubmit={async (e) => {
               e.preventDefault();
-              setLoading(true);
-              setSongs(await loadSongs(path));
-              setLoading(false);
+              startTransition(async () => {
+                const songs = await loadSongs(path);
+                startTransition(() => setSongs(songs));
+              });
             }}
           >
             <Group gap="xs">
@@ -75,7 +74,9 @@ export function Component() {
                 placeholder="Enter a path..."
                 flex={1}
               />
-              <Button type="submit">Scan</Button>
+              <Button type="submit" loading={isPending}>
+                Scan
+              </Button>
             </Group>
           </form>
         </Stack>
