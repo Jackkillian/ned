@@ -92,6 +92,8 @@ pub fn run() {
             .transparent(true)
             .decorations(false)
             .accept_first_mouse(true)
+            .min_inner_size(440.0, 112.0)
+            .max_inner_size(600.0, 112.0)
             .inner_size(440.0, 112.0);
             builder.build().expect("Could not create player window");
             Ok(())
