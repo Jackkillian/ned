@@ -14,6 +14,10 @@ import { SongsTable } from "../components/SongsTable";
 import { SongsGrid } from "@/components/SongsGrid";
 import { useLibrary } from "@/contexts/LibraryContext";
 import { Song } from "@/types/Song";
+import {
+  ViewMode,
+  ViewToggleButton,
+} from "@/components/input/ViewToggleButton";
 
 /**
  * @param path - Directory path to scan
@@ -29,6 +33,7 @@ async function loadSongs(path: string): Promise<Song[]> {
 }
 
 export function Component() {
+  const [mode, setMode] = useState<ViewMode>(ViewMode.CARD);
   const [loading, setLoading] = useState(false);
   const [path, setPath] = useState("");
   const { setSongs } = useLibrary();
@@ -48,7 +53,12 @@ export function Component() {
       />
       <Paper p="md" pos="sticky" top={0}>
         <Stack gap="sm">
-          <Title order={2}>Search Directory</Title>
+          <Group>
+            <Title order={2} mr="auto">
+              Search Directory
+            </Title>
+            <ViewToggleButton onChange={setMode} value={mode} />
+          </Group>
           <form
             onSubmit={async (e) => {
               e.preventDefault();
@@ -71,8 +81,7 @@ export function Component() {
         </Stack>
       </Paper>
       <Box flex={1} mih={0} p="md" style={{ overflow: "auto" }}>
-        <SongsGrid />
-        <SongsTable />
+        {mode === ViewMode.CARD ? <SongsGrid /> : <SongsTable />}
       </Box>
     </Stack>
   );
