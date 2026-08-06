@@ -1,3 +1,4 @@
+import "@mantine/core/styles.css";
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom/client";
 import {
@@ -7,8 +8,8 @@ import {
   Paper,
   MantineProvider,
   Stack,
+  Center,
 } from "@mantine/core";
-import "@mantine/core/styles.css";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { Audio } from "@gfazioli/mantine-audio";
@@ -34,17 +35,18 @@ function Player() {
     };
   }, []);
 
-  if (!currentSong) {
+  if (!currentSong)
     return (
       <Paper
         w="100vw"
         h="100vh"
         onMouseDown={() => appWindowRef.current.startDragging()}
       >
-        No active song
+        <Center h="100vh">
+          <Text c="dimmed">No active song</Text>
+        </Center>
       </Paper>
     );
-  }
 
   return (
     <Paper
