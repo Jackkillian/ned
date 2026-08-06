@@ -17,7 +17,7 @@ const routes: RouteObject[] = [
     children: [
       {
         index: true,
-        lazy: () => import("./pages/Root.jsx"),
+        lazy: () => import("./pages/Home.tsx"),
         handle: { label: "Home", icon: HouseIcon },
       },
       {
