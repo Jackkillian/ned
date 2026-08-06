@@ -3,24 +3,31 @@ import "mantine-datatable/styles.layer.css";
 import "@gfazioli/mantine-audio/styles.css";
 import "./App.css";
 import { AppShell, MantineProvider } from "@mantine/core";
-import { createBrowserRouter, Outlet } from "react-router";
+import { createBrowserRouter, Outlet, RouteObject } from "react-router";
 import { useDisclosure } from "@mantine/hooks";
 import { LibraryProvider } from "@/contexts/LibraryContext.tsx";
 import { TitleBar } from "@/components/navigation/TitleBar.tsx";
+import { NavBar } from "./components/navigation/NavBar.tsx";
+import { HouseIcon } from "@phosphor-icons/react";
 
-export const router = createBrowserRouter([
+const routes: RouteObject[] = [
   {
     path: "/",
     Component: Root,
     children: [
-      { index: true, lazy: () => import("./pages/Root.jsx") },
+      {
+        index: true,
+        lazy: () => import("./pages/Root.jsx"),
+        handle: { label: "Home", icon: HouseIcon },
+      },
       {
         path: "/album/:album",
         lazy: () => import("./pages/Album.tsx"),
+        handle: { hidden: true },
       },
     ],
   },
-]);
+];
 
 function Root() {
   const [opened, { toggle }] = useDisclosure();
@@ -41,7 +48,9 @@ function Root() {
           <AppShell.Header>
             <TitleBar opened={opened} toggle={toggle} />
           </AppShell.Header>
-          <AppShell.Navbar p="md">Navbar</AppShell.Navbar>
+          <AppShell.Navbar p="md">
+            <NavBar routes={routes} />
+          </AppShell.Navbar>
           <AppShell.Main
             h="calc(100vh - 44px)"
             pt="calc(var(--app-shell-header-offset, 0rem))"
@@ -54,3 +63,5 @@ function Root() {
     </MantineProvider>
   );
 }
+
+export const router = createBrowserRouter(routes);
