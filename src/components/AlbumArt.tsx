@@ -27,7 +27,7 @@ export function AlbumArt({
       ) : (
         <Box bg="dark.6" c="dimmed">
           <Center h="100%" p="xl">
-            <ImageBrokenIcon size={size} />
+            <ImageBrokenIcon size={size === "fit" ? "50%" : size} />
           </Center>
         </Box>
       )}
