@@ -6,6 +6,7 @@ import unusedImportsPlugin from "eslint-plugin-unused-imports";
 import importXPlugin from "eslint-plugin-import-x";
 import eslintConfigPrettier from "eslint-config-prettier";
 import tsParser from "@typescript-eslint/parser";
+import pluginQuery from "@tanstack/eslint-plugin-query";
 import globals from "globals";
 
 export default defineConfig([
@@ -29,6 +30,7 @@ export default defineConfig([
     plugins: {
       "unused-imports": unusedImportsPlugin,
       import: importXPlugin,
+      "@tanstack/query": pluginQuery,
     },
     languageOptions: {
       parser: tsParser,
@@ -97,6 +99,10 @@ export default defineConfig([
         },
       ],
       "import/no-duplicates": "error",
+      "@tanstack/query/exhaustive-deps": "error",
+      "@tanstack/query/no-deprecated-options": "error",
+      "@tanstack/query/prefer-query-object-syntax": "error",
+      "@tanstack/query/stable-query-client": "error",
     },
   },
   eslintConfigPrettier,

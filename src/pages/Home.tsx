@@ -1,5 +1,4 @@
 import { useEffect, useState, useTransition } from "react";
-import { invoke } from "@tauri-apps/api/core";
 import {
   Button,
   Group,
@@ -8,41 +7,34 @@ import {
   Stack,
   Box,
   Paper,
+  Loader,
+  Center,
 } from "@mantine/core";
 import { SongsTable } from "@/components/SongsTable";
 import { SongsGrid } from "@/components/SongsGrid";
 import { useLibrary } from "@/contexts/LibraryContext";
-import { Song } from "@/types/Song";
 import {
   ViewMode,
   ViewToggleButton,
 } from "@/components/input/ViewToggleButton";
-
-/**
- * @param path - Directory path to scan
- * @returns A list of songs in the given directory
- */
-async function loadSongs(path: string): Promise<Song[]> {
-  try {
-    return await invoke("scan", { path });
-  } catch (error) {
-    console.error("Failed to scan directory:", error);
-    return [];
-  }
-}
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { songsQuery } from "@/api";
 
 export function Component() {
-  const [isPending, startTransition] = useTransition();
-  const [mode, setMode] = useState<ViewMode>(ViewMode.CARD);
-  const [path, setPath] = useState("");
   const { setSongs } = useLibrary();
+  const [_isPending, startTransition] = useTransition();
+  const [mode, setMode] = useState<ViewMode>(ViewMode.CARD);
+  const [activePath, setActivePath] = useState(
+    "/Users/school/Music/twenty one pilots",
+  );
+  const queryClient = useQueryClient();
+  const [inputPath, setInputPath] = useState("");
+
+  const { data: songs, isFetching } = useQuery(songsQuery(activePath));
 
   useEffect(() => {
-    startTransition(async () => {
-      const songs = await loadSongs("/Users/school/Music/twenty one pilots/");
-      startTransition(() => setSongs(songs));
-    });
-  }, [setSongs]);
+    if (songs) setSongs(songs);
+  }, [setSongs, songs]);
 
   return (
     <Stack pos="relative" h="100%">
@@ -52,29 +44,37 @@ export function Component() {
             <Title order={2} mr="auto">
               Search Directory
             </Title>
+            <Button
+              variant="subtle"
+              onClick={() =>
+                queryClient.invalidateQueries({
+                  queryKey: ["songs", activePath],
+                })
+              }
+            >
+              Refresh
+            </Button>
             <ViewToggleButton
               onChange={(mode) => startTransition(() => setMode(mode))}
               value={mode}
             />
           </Group>
           <form
-            onSubmit={async (e) => {
+            onSubmit={(e) => {
               e.preventDefault();
-              startTransition(async () => {
-                const songs = await loadSongs(path);
-                startTransition(() => setSongs(songs));
-              });
+              if (!inputPath.trim()) return;
+              setActivePath(inputPath);
             }}
           >
             <Group gap="xs">
               <TextInput
                 id="scan-input"
-                value={path}
-                onChange={(e) => setPath(e.currentTarget.value)}
+                value={inputPath}
+                onChange={(e) => setInputPath(e.currentTarget.value)}
                 placeholder="Enter a path..."
                 flex={1}
               />
-              <Button type="submit" loading={isPending}>
+              <Button type="submit" loading={isFetching}>
                 Scan
               </Button>
             </Group>
@@ -82,7 +82,15 @@ export function Component() {
         </Stack>
       </Paper>
       <Box flex={1} mih={0} p="md" style={{ overflow: "auto" }}>
-        {mode === ViewMode.CARD ? <SongsGrid /> : <SongsTable />}
+        {isFetching ? (
+          <Center h="100%">
+            <Loader />
+          </Center>
+        ) : mode === ViewMode.CARD ? (
+          <SongsGrid />
+        ) : (
+          <SongsTable />
+        )}
       </Box>
     </Stack>
   );
