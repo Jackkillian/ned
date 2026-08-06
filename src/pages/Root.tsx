@@ -8,6 +8,7 @@ import {
   Stack,
   Box,
   LoadingOverlay,
+  Paper,
 } from "@mantine/core";
 import { SongsTable } from "../components/SongsTable";
 import { SongsGrid } from "@/components/SongsGrid";
@@ -45,16 +46,7 @@ export function Component() {
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />
-      <Box
-        p="md"
-        bg="white"
-        pos="sticky"
-        top={0}
-        style={{
-          zIndex: 10,
-          borderBottom: "1px solid var(--mantine-color-gray-2)",
-        }}
-      >
+      <Paper p="md" pos="sticky" top={0}>
         <Stack gap="sm">
           <Title order={2}>Search Directory</Title>
           <form
@@ -77,7 +69,7 @@ export function Component() {
             </Group>
           </form>
         </Stack>
-      </Box>
+      </Paper>
       <Box flex={1} mih={0} p="md" style={{ overflow: "auto" }}>
         <SongsGrid />
         <SongsTable />
