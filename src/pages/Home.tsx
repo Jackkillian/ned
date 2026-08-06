@@ -9,7 +9,7 @@ import {
   Box,
   Paper,
 } from "@mantine/core";
-import { SongsTable } from "../components/SongsTable";
+import { SongsTable } from "@/components/SongsTable";
 import { SongsGrid } from "@/components/SongsGrid";
 import { useLibrary } from "@/contexts/LibraryContext";
 import { Song } from "@/types/Song";
