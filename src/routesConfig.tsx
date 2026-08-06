@@ -3,10 +3,10 @@ import "mantine-datatable/styles.layer.css";
 import "@gfazioli/mantine-audio/styles.css";
 import "./App.css";
 import { AppShell, MantineProvider } from "@mantine/core";
-import { TitleBar } from "./components/TitleBar";
 import { createBrowserRouter, Outlet } from "react-router";
 import { useDisclosure } from "@mantine/hooks";
-import { LibraryProvider } from "./contexts/LibraryContext.tsx";
+import { LibraryProvider } from "@/contexts/LibraryContext.tsx";
+import { TitleBar } from "@/components/navigation/TitleBar.tsx";
 
 export const router = createBrowserRouter([
   {
