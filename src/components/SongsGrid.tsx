@@ -9,7 +9,7 @@ export function SongsGrid() {
   const songsByAlbum = useMemo(() => library.getSongsByAlbum(), [library]);
 
   return (
-    <SimpleGrid cols={{ base: 1, sm: 3, lg: 5 }} spacing="md">
+    <SimpleGrid cols={{ base: 1, xs: 3, sm: 4, lg: 5 }} spacing="md">
       {Object.entries(songsByAlbum).map(([album, songs]) => {
         const albumArt = songs[0]?.tag_data?.picture;
         return (
